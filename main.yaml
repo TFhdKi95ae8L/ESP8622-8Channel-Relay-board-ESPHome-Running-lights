@@ -1,0 +1,178 @@
+esphome:
+  name: YOURDEVICENAMEHERE
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: "YOURSSIDHERE"
+  password: "YOURPASSWORDHERE"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "ESPrelay"
+    password: "YOURPASSWORDHERE"
+
+captive_portal:
+
+ota:
+
+logger:
+
+substitutions:
+  interval1: 1700ms
+  interval2: 2500ms
+
+binary_sensor:
+  - platform: gpio
+    internal: true
+    pin:
+      number: GPIO1             #Tx
+      mode: INPUT_PULLUP
+      inverted: True
+    filters:
+      - delayed_on: 50ms
+      - delayed_off: 50ms
+    name: "On"
+    on_press:
+      then:
+        - script.execute: stop
+        - script.execute: start
+    on_click:
+      - min_length: 500ms
+        max_length: 1s
+        then:
+          - script.execute: stop
+          - script.execute: flash
+      - min_length: 1s
+        max_length: 5s
+        then:
+          - script.execute: stop
+          - script.execute: allon
+
+  - platform: gpio
+    internal: true
+    pin:
+      number: GPIO3             #Rx
+      mode: INPUT_PULLUP
+      inverted: True
+    filters:
+      - delayed_on: 50ms
+      - delayed_off: 50ms
+    name: "Off"
+    on_press:
+      then:
+        - script.execute: stop
+
+switch:
+  - platform: gpio
+    name: "Relay 1"
+    pin: D4
+    inverted: True
+    id: relay1
+  - platform: gpio
+    name: "Relay 2"
+    pin: D3
+    inverted: True
+    id: relay2
+  - platform: gpio
+    name: "Relay 3"
+    pin: D2
+    inverted: True
+    id: relay3
+  - platform: gpio
+    name: "Relay 4"
+    pin: D1
+    inverted: True
+    id: relay4
+  - platform: gpio
+    name: "Relay 5"
+    pin: D0
+    inverted: True
+    id: relay5
+  - platform: gpio
+    name: "Relay 6"
+    pin: D5
+    inverted: True
+    id: relay6
+  - platform: gpio
+    name: "Relay 7"
+    pin: D7
+    inverted: True
+    id: relay7
+  - platform: gpio
+    name: "Relay 8"
+    pin: D8
+    inverted: True
+    id: relay8
+
+script:
+  - id: start
+    mode: queued
+    then:
+      - switch.turn_on: relay1
+      - delay: $interval1
+      - switch.turn_on: relay2
+      - delay: $interval1
+      - switch.turn_on: relay3
+      - delay: $interval1
+      - switch.turn_on: relay4
+      - delay: $interval1
+      - switch.turn_on: relay5
+      - delay: $interval1
+      - switch.turn_on: relay6
+      - delay: $interval1
+      - switch.turn_on: relay7
+      - delay: $interval1
+      - switch.turn_on: relay8
+      - delay: $interval2
+      - script.execute: alloff
+      - delay: $interval1
+      - script.execute: start
+  - id: alloff
+    then:
+      - switch.turn_off: relay1
+      - switch.turn_off: relay2
+      - switch.turn_off: relay3
+      - switch.turn_off: relay4
+      - switch.turn_off: relay5
+      - switch.turn_off: relay6
+      - switch.turn_off: relay7
+      - switch.turn_off: relay8
+  - id: allon
+    then:
+      - switch.turn_on: relay1
+      - switch.turn_on: relay2
+      - switch.turn_on: relay3
+      - switch.turn_on: relay4
+      - switch.turn_on: relay5
+      - switch.turn_on: relay6
+      - switch.turn_on: relay7
+      - switch.turn_on: relay8
+  - id: flash
+    mode: queued
+    then:
+      - switch.turn_on: relay1
+      - switch.turn_on: relay2
+      - switch.turn_on: relay3
+      - switch.turn_on: relay4
+      - switch.turn_on: relay5
+      - switch.turn_on: relay6
+      - switch.turn_on: relay7
+      - switch.turn_on: relay8
+      - delay: $interval1
+      - switch.turn_off: relay1
+      - switch.turn_off: relay2
+      - switch.turn_off: relay3
+      - switch.turn_off: relay4
+      - switch.turn_off: relay5
+      - switch.turn_off: relay6
+      - switch.turn_off: relay7
+      - switch.turn_off: relay8
+      - delay: $interval1
+      - script.execute: flash
+  - id: stop
+    then:
+      - script.stop: start
+      - script.stop: allon
+      - script.stop: flash
+      - script.execute: alloff
