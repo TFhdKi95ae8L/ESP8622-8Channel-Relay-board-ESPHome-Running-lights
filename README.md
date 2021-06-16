@@ -6,6 +6,7 @@ It is used for lighting up 8 letters in succession, looping indefinetly.
 SPDT with spring center off switch for start and stop.
 
 The switch "on" has three modes:
+
 short toggle: start successive lights
 
 Longer toggle: start flashing lights
