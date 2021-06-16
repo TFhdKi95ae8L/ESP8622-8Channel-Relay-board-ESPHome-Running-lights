@@ -7,7 +7,10 @@ SPDT with spring center off switch for start and stop.
 
 The switch "on" has three modes:
 short toggle: start successive lights
+
 Longer toggle: start flashing lights
+
 Longest toggle: start all lights on
+
 
 All modes can be stopped with the switch "off"
