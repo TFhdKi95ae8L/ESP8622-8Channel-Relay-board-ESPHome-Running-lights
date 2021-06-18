@@ -15,3 +15,7 @@ Longest toggle: start all lights on
 
 
 All modes can be stopped with the switch "off"
+
+
+I needed some time to figure out which pins to use without causing trouble booting the esp.
+Some relays will toggle/trigger on boot, so be warned!
